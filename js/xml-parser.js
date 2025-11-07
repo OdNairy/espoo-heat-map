@@ -84,16 +84,16 @@ window.xmlParser = {
             'HUONEISTOT', 'KELLARINPINTAALA', 'KAYTETTYRAKENNUSOIKEUS'
         ];
 
-        // Try different namespace prefixes
-        const prefixes = ['GIS:', 'gis:', ''];
-
+        // Try to find properties with different approaches
         propertyNames.forEach(propName => {
-            for (let prefix of prefixes) {
-                const elem = featureNode.querySelector(prefix + propName);
-                if (elem && elem.textContent) {
-                    properties[propName] = elem.textContent.trim();
-                    break;
-                }
+            // First try direct getElementsByTagName
+            let elems = featureNode.getElementsByTagName('GIS:' + propName);
+            if (elems.length === 0) {
+                elems = featureNode.getElementsByTagName(propName);
+            }
+
+            if (elems.length > 0 && elems[0].textContent) {
+                properties[propName] = elems[0].textContent.trim();
             }
         });
 
@@ -121,9 +121,12 @@ window.xmlParser = {
      */
     extractGeometry: function(featureNode) {
         // First look for GIS:Geometry element (as seen in Espoo data)
-        let geometryContainer = featureNode.querySelector('GIS\\:Geometry, Geometry');
+        let geometryContainer = featureNode.getElementsByTagName('GIS:Geometry')[0];
         if (!geometryContainer) {
-            // Try with different namespace
+            geometryContainer = featureNode.getElementsByTagName('Geometry')[0];
+        }
+        if (!geometryContainer) {
+            // Try with different namespace or names
             const allElems = Array.from(featureNode.children);
             geometryContainer = allElems.find(elem =>
                 elem.tagName.includes('Geometry') ||
@@ -136,18 +139,21 @@ window.xmlParser = {
         // Now look for actual geometry type within the container (or the feature itself)
         const searchNode = geometryContainer || featureNode;
 
-        const geomSelectors = [
-            'gml\\:Point', 'Point',
-            'gml\\:Polygon', 'Polygon',
-            'gml\\:MultiPolygon', 'MultiPolygon',
-            'gml\\:LineString', 'LineString',
-            'gml\\:MultiLineString', 'MultiLineString'
+        const geomTypes = [
+            'gml:Point', 'Point',
+            'gml:Polygon', 'Polygon',
+            'gml:MultiPolygon', 'MultiPolygon',
+            'gml:LineString', 'LineString',
+            'gml:MultiLineString', 'MultiLineString'
         ];
 
         let geomNode = null;
-        for (let selector of geomSelectors) {
-            geomNode = searchNode.querySelector(selector);
-            if (geomNode) break;
+        for (let geomType of geomTypes) {
+            const elems = searchNode.getElementsByTagName(geomType);
+            if (elems.length > 0) {
+                geomNode = elems[0];
+                break;
+            }
         }
 
         if (!geomNode) return null;
@@ -192,15 +198,21 @@ window.xmlParser = {
         const rings = [];
 
         // Get exterior ring
-        const exterior = polygonNode.querySelector('exterior, gml\\:exterior, outerBoundaryIs');
+        let exterior = polygonNode.getElementsByTagName('gml:exterior')[0];
+        if (!exterior) exterior = polygonNode.getElementsByTagName('exterior')[0];
+        if (!exterior) exterior = polygonNode.getElementsByTagName('outerBoundaryIs')[0];
+
         if (exterior) {
             const ring = this.parseLinearRing(exterior);
             if (ring) rings.push(ring);
         }
 
         // Get interior rings (holes)
-        const interiors = polygonNode.querySelectorAll('interior, gml\\:interior, innerBoundaryIs');
-        interiors.forEach(interior => {
+        let interiors = polygonNode.getElementsByTagName('gml:interior');
+        if (interiors.length === 0) interiors = polygonNode.getElementsByTagName('interior');
+        if (interiors.length === 0) interiors = polygonNode.getElementsByTagName('innerBoundaryIs');
+
+        Array.from(interiors).forEach(interior => {
             const ring = this.parseLinearRing(interior);
             if (ring) rings.push(ring);
         });
@@ -244,22 +256,25 @@ window.xmlParser = {
      * Parse LinearRing
      */
     parseLinearRing: function(ringContainer) {
-        const linearRing = ringContainer.querySelector('LinearRing, gml\\:LinearRing');
+        let linearRing = ringContainer.getElementsByTagName('gml:LinearRing')[0];
+        if (!linearRing) linearRing = ringContainer.getElementsByTagName('LinearRing')[0];
         if (!linearRing) return null;
 
         let coords = [];
 
         // First try posList (single element with all coordinates)
-        const posListNode = linearRing.querySelector('posList, gml\\:posList');
+        let posListNode = linearRing.getElementsByTagName('gml:posList')[0];
+        if (!posListNode) posListNode = linearRing.getElementsByTagName('posList')[0];
         if (posListNode) {
             coords = this.parsePosList(posListNode.textContent);
         }
 
         // Then try individual pos elements (as in Espoo data)
         if (coords.length === 0) {
-            const posNodes = linearRing.querySelectorAll('pos, gml\\:pos');
+            let posNodes = linearRing.getElementsByTagName('gml:pos');
+            if (posNodes.length === 0) posNodes = linearRing.getElementsByTagName('pos');
             if (posNodes.length > 0) {
-                posNodes.forEach(pos => {
+                Array.from(posNodes).forEach(pos => {
                     const values = pos.textContent.trim().split(/\s+/).map(Number);
                     if (values.length >= 2) {
                         coords.push([values[0], values[1]]);
@@ -270,7 +285,8 @@ window.xmlParser = {
 
         // Finally try coordinates element
         if (coords.length === 0) {
-            const coordinatesNode = linearRing.querySelector('coordinates, gml\\:coordinates');
+            let coordinatesNode = linearRing.getElementsByTagName('gml:coordinates')[0];
+            if (!coordinatesNode) coordinatesNode = linearRing.getElementsByTagName('coordinates')[0];
             if (coordinatesNode) {
                 coords = this.parseCoordinates(coordinatesNode.textContent);
             }

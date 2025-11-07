@@ -69,10 +69,29 @@ const utils = {
     getBuildingCategory: function(typeCode) {
         if (!typeCode) return 'muu';
 
+        // First try numeric code
         const typeStr = typeCode.toString().padStart(3, '0');
         const typeInfo = CONFIG.buildingTypes[typeStr];
+        if (typeInfo) return typeInfo.category;
 
-        return typeInfo ? typeInfo.category : 'muu';
+        // Then try text-based matching
+        const typeText = typeCode.toString().toLowerCase();
+
+        // Map Finnish building type names to categories
+        if (typeText.includes('kerrostalo') || typeText.includes('asuinkerrostalo')) {
+            return 'kerrostalo';
+        } else if (typeText.includes('omakotitalo') || typeText.includes('yhden asunnon')) {
+            return 'omakotitalo';
+        } else if (typeText.includes('rivitalo') || typeText.includes('kytketty')) {
+            return 'rivitalo';
+        } else if (typeText.includes('paritalo') || typeText.includes('kahden asunnon')) {
+            return 'paritalo';
+        } else if (typeText.includes('asuin') || typeText.includes('talo')) {
+            // Generic residential buildings
+            return 'kerrostalo';
+        }
+
+        return 'muu';
     },
 
     /**

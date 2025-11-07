@@ -18,7 +18,7 @@ const CONFIG = {
         endpoint: 'https://kartat.espoo.fi/teklaogcweb/wfs.ashx',
         typename: 'GIS:Rakennukset',
         outputFormat: 'json', // Try simpler format name
-        maxFeatures: 50000, // Limit for performance
+        maxFeatures: 50000, // Load all Espoo buildings (may take longer)
         // Note: The service uses EPSG:3879 (ETRS-GK25)
         srsName: 'EPSG:3879'
     },

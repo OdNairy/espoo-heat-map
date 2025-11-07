@@ -87,7 +87,7 @@ const dataLoader = {
                         request: 'GetFeature',
                         typename: CONFIG.wfs.typename,
                         srsName: CONFIG.wfs.srsName,
-                        maxFeatures: Math.min(CONFIG.wfs.maxFeatures, 1000) // Start with fewer features for testing
+                        maxFeatures: CONFIG.wfs.maxFeatures // Use full limit from config
                     });
 
                     const url = `${CONFIG.wfs.endpoint}?${params.toString()}`;

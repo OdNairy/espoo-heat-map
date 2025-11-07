@@ -77,13 +77,6 @@
 
             console.log('Application initialized successfully');
 
-            // Set up periodic data refresh (weekly)
-            if (CONFIG.cache.enabled) {
-                setInterval(() => {
-                    refreshData();
-                }, 7 * 24 * 60 * 60 * 1000); // Weekly
-            }
-
         } catch (error) {
             console.error('Initialization error:', error);
             handleError(error);

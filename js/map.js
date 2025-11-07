@@ -20,10 +20,7 @@ const mapModule = {
             return false;
         }
 
-        // Initialize proj4 projection
-        if (window.proj4) {
-            proj4.defs('EPSG:3879', CONFIG.projections['EPSG:3879']);
-        }
+        // Proj4 projection not needed - data is pre-transformed
 
         // Initialize map
         try {

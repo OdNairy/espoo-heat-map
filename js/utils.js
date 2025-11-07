@@ -126,44 +126,20 @@ const utils = {
 
     /**
      * Transform coordinates from EPSG:3879 to WGS84
+     * Note: Not needed anymore as data is pre-transformed
      */
     transformCoordinates: function(coords) {
-        if (!proj4 || !coords) return coords;
-
-        try {
-            // Define projection if not already defined
-            if (!proj4.defs('EPSG:3879')) {
-                proj4.defs('EPSG:3879', CONFIG.projections['EPSG:3879']);
-            }
-
-            // Transform coordinates
-            return proj4('EPSG:3879', 'WGS84', coords);
-        } catch (error) {
-            console.error('Coordinate transformation error:', error);
-            return coords;
-        }
+        // Data is already in WGS84 from the update script
+        return coords;
     },
 
     /**
      * Transform GeoJSON geometry coordinates
+     * Note: Not needed anymore as data is pre-transformed
      */
     transformGeometry: function(geometry) {
-        if (!geometry || !geometry.coordinates) return geometry;
-
-        const transformCoordRecursive = (coords) => {
-            if (typeof coords[0] === 'number') {
-                // Single coordinate pair
-                return this.transformCoordinates(coords);
-            } else {
-                // Nested coordinates
-                return coords.map(c => transformCoordRecursive(c));
-            }
-        };
-
-        return {
-            ...geometry,
-            coordinates: transformCoordRecursive(geometry.coordinates)
-        };
+        // Data is already transformed from the update script
+        return geometry;
     },
 
     /**
@@ -213,9 +189,7 @@ const utils = {
             }
         }
 
-        if (!window.proj4) {
-            errors.push('Proj4js not loaded');
-        }
+        // Proj4 not needed anymore - data is pre-transformed
 
         if (!window.fetch) {
             errors.push('Fetch API not supported');
@@ -297,7 +271,7 @@ const utils = {
     /**
      * Store data in localStorage with expiry
      */
-    setCache: function(key, data, expiryMs = CONFIG.cache.duration) {
+    setCache: function(key, data, expiryMs = 7 * 24 * 60 * 60 * 1000) {
         try {
             const item = {
                 data: data,

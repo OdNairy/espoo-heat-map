@@ -13,21 +13,8 @@ const CONFIG = {
     // Map Style - Using OpenFreeMap (free vector tiles)
     mapStyle: 'https://tiles.openfreemap.org/styles/liberty',
 
-    // WFS Endpoint for Espoo Buildings
-    wfs: {
-        endpoint: 'https://kartat.espoo.fi/teklaogcweb/wfs.ashx',
-        typename: 'GIS:Rakennukset',
-        outputFormat: 'json', // Try simpler format name
-        maxFeatures: 50000, // Load all Espoo buildings (may take longer)
-        // Note: The service uses EPSG:3879 (ETRS-GK25)
-        srsName: 'EPSG:3879'
-    },
-
-    // Coordinate System Definitions
-    projections: {
-        // Finnish ETRS-GK25 projection
-        'EPSG:3879': '+proj=tmerc +lat_0=0 +lon_0=25 +k=1 +x_0=25500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs'
-    },
+    // Static data file path
+    dataFile: 'data/espoo-buildings.json',
 
     // Building Types Mapping (Finnish to English)
     buildingTypes: {
@@ -121,14 +108,7 @@ const CONFIG = {
     },
 
     // Localization
-    locale: 'fi', // 'fi' or 'en'
-
-    // Cache Settings
-    cache: {
-        enabled: true,
-        duration: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-        storageKey: 'espoo-buildings-data'
-    }
+    locale: 'fi' // 'fi' or 'en'
 };
 
 // Export for use in other modules (if using modules)

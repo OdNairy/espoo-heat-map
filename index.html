@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espoo Housing Heatmap | Espoon asuntojen lämpökartta</title>
+    <meta name="description" content="Interactive heatmap visualization of housing in Espoo by construction year and building type">
+
+    <!-- MapLibre GL JS CSS -->
+    <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏘️</text></svg>">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Ladataan Espoon rakennustietoja...</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Espoon asuntojen lämpökartta</h1>
+            <button id="menu-toggle" class="menu-toggle" aria-label="Toggle menu">☰</button>
+        </header>
+
+        <!-- Controls Panel -->
+        <aside id="controls-panel" class="controls-panel">
+            <div class="controls-content">
+                <!-- View Mode Toggle -->
+                <section class="control-section">
+                    <h2>Näkymä</h2>
+                    <div class="toggle-group">
+                        <input type="radio" id="view-year" name="view-mode" value="year" checked>
+                        <label for="view-year">Rakennusvuosi</label>
+
+                        <input type="radio" id="view-type" name="view-mode" value="type">
+                        <label for="view-type">Rakennustyyppi</label>
+                    </div>
+                </section>
+
+                <!-- Year Range Filter -->
+                <section id="year-controls" class="control-section">
+                    <h2>Vuosiväli</h2>
+                    <div class="year-range-display">
+                        <span id="year-min">1900</span> - <span id="year-max">2024</span>
+                    </div>
+                    <div id="year-slider" class="slider"></div>
+                </section>
+
+                <!-- Building Type Filters -->
+                <section id="type-controls" class="control-section" style="display: none;">
+                    <h2>Rakennustyypit</h2>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="building-type" value="kerrostalo" checked>
+                            <span>Kerrostalot</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="building-type" value="omakotitalo" checked>
+                            <span>Omakotitalot</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="building-type" value="rivitalo" checked>
+                            <span>Rivitalot</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="building-type" value="paritalo" checked>
+                            <span>Paritalot</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="building-type" value="muu" checked>
+                            <span>Muut</span>
+                        </label>
+                    </div>
+                </section>
+
+                <!-- Statistics -->
+                <section class="control-section">
+                    <h2>Tilastot</h2>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Rakennuksia näkyvissä:</span>
+                            <span id="building-count" class="stat-value">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Kokonaiskerrosala:</span>
+                            <span id="total-area" class="stat-value">-</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Legend -->
+                <section class="control-section">
+                    <h2>Selite</h2>
+                    <div id="legend" class="legend">
+                        <!-- Legend content will be inserted by JavaScript -->
+                    </div>
+                </section>
+
+                <!-- Data Source -->
+                <section class="control-section">
+                    <h3>Tietolähde</h3>
+                    <p class="data-source">
+                        Espoon kaupunki - Avoin data<br>
+                        <small>Päivitetty viikoittain</small>
+                    </p>
+                </section>
+            </div>
+        </aside>
+
+        <!-- Map Container -->
+        <main id="map" class="map-container"></main>
+    </div>
+
+    <!-- Info Popup Template -->
+    <template id="popup-template">
+        <div class="popup-content">
+            <h3 class="popup-title"></h3>
+            <dl class="popup-details">
+                <dt>Osoite:</dt>
+                <dd class="address">-</dd>
+                <dt>Valmistunut:</dt>
+                <dd class="year">-</dd>
+                <dt>Tyyppi:</dt>
+                <dd class="type">-</dd>
+                <dt>Kerroksia:</dt>
+                <dd class="floors">-</dd>
+                <dt>Kerrosala:</dt>
+                <dd class="area">-</dd>
+            </dl>
+        </div>
+    </template>
+
+    <!-- External Libraries -->
+    <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.min.js"></script>
+
+    <!-- Application Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/xml-parser.js"></script>
+    <script src="js/data-loader.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

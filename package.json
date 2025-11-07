@@ -1,0 +1,28 @@
+{
+  "name": "espoo-housing-heatmap",
+  "version": "1.0.0",
+  "description": "Interactive heatmap visualization of housing in Espoo, Finland",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8000",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "heatmap",
+    "visualization",
+    "espoo",
+    "finland",
+    "housing",
+    "maplibre",
+    "gis",
+    "open-data"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/espoo-housing-heatmap.git"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}

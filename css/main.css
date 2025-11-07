@@ -1,0 +1,455 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #0066cc;
+    --secondary-color: #ff6b35;
+    --background-light: #ffffff;
+    --background-dark: #1a1a1a;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --panel-width: 320px;
+    --header-height: 60px;
+    --mobile-header-height: 56px;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background-color: var(--background-light);
+    overflow: hidden;
+}
+
+/* Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+/* Header */
+.header {
+    height: var(--header-height);
+    background: var(--background-light);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+.menu-toggle:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Main Layout */
+.map-container {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: calc(100vh - var(--header-height));
+}
+
+/* Controls Panel */
+.controls-panel {
+    position: absolute;
+    top: var(--header-height);
+    left: 0;
+    width: var(--panel-width);
+    height: calc(100vh - var(--header-height));
+    background: var(--background-light);
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform 0.3s ease;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.controls-content {
+    padding: 20px;
+}
+
+.control-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.control-section:last-child {
+    border-bottom: none;
+}
+
+.control-section h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--text-primary);
+}
+
+.control-section h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+}
+
+/* Toggle Group */
+.toggle-group {
+    display: flex;
+    gap: 10px;
+    background: #f5f5f5;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.toggle-group input[type="radio"] {
+    display: none;
+}
+
+.toggle-group label {
+    flex: 1;
+    padding: 8px 12px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.toggle-group input[type="radio"]:checked + label {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Year Range Slider */
+.year-range-display {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.slider {
+    height: 40px;
+    position: relative;
+}
+
+/* Custom slider styles will be added by JavaScript library */
+
+/* Checkbox Group */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.checkbox-label:hover {
+    background: #f5f5f5;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    cursor: pointer;
+}
+
+.checkbox-label span {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+/* Statistics */
+.stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legend-color {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.legend-label {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+/* Data Source */
+.data-source {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.data-source small {
+    display: block;
+    margin-top: 4px;
+    color: #999;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+}
+
+.loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+/* Popup Styles */
+.maplibregl-popup {
+    max-width: 280px;
+}
+
+.maplibregl-popup-content {
+    padding: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.popup-content {
+    padding: 15px;
+}
+
+.popup-title {
+    margin-bottom: 12px;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.popup-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 12px;
+}
+
+.popup-details dt {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.popup-details dd {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .header {
+        height: var(--mobile-header-height);
+        padding: 0 15px;
+    }
+
+    .header h1 {
+        font-size: 1.2rem;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .map-container {
+        height: calc(100vh - var(--mobile-header-height));
+    }
+
+    .controls-panel {
+        top: var(--mobile-header-height);
+        left: 0;
+        width: 85%;
+        max-width: 320px;
+        height: calc(100vh - var(--mobile-header-height));
+        transform: translateX(-100%);
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .controls-panel.open {
+        transform: translateX(0);
+    }
+
+    /* Overlay for mobile menu */
+    .controls-panel::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
+
+    .controls-panel.open::after {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .controls-panel {
+        width: 90%;
+    }
+
+    .control-section h2 {
+        font-size: 1rem;
+    }
+
+    .toggle-group label {
+        font-size: 0.85rem;
+        padding: 6px 8px;
+    }
+
+    .checkbox-label span {
+        font-size: 0.9rem;
+    }
+}
+
+/* Desktop - Wider Screens */
+@media (min-width: 1200px) {
+    .controls-panel {
+        width: 360px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .header,
+    .controls-panel,
+    .menu-toggle {
+        display: none;
+    }
+
+    .map-container {
+        height: 100vh;
+        width: 100vw;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Dark Mode Support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+    /* Dark mode styles can be added here */
+}

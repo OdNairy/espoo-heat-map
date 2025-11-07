@@ -181,11 +181,11 @@ const mapModule = {
                     'interpolate',
                     ['linear'],
                     ['get', 'year'],
-                    1900, '#2166ac',
-                    1950, '#67a9cf',
-                    1980, '#d1e5f0',
-                    2000, '#fddbc7',
-                    2024, '#b2182b'
+                    1900, 'rgb(215, 48, 39)',   // Red (oldest)
+                    1990, 'rgb(215, 48, 39)',   // Red (old buildings)
+                    2002, 'rgb(69, 117, 180)',  // Blue (middle period)
+                    2015, 'rgb(77, 175, 74)',   // Green (new buildings)
+                    2025, 'rgb(77, 175, 74)'    // Green (newest)
                 ],
                 'circle-opacity': [
                     'interpolate',

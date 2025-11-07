@@ -216,12 +216,13 @@ const filters = {
         if (view === 'year') {
             // Year-based legend
             const yearRanges = [
-                { label: '< 1940', color: '#2166ac' },
-                { label: '1940-1960', color: '#4393c3' },
-                { label: '1960-1980', color: '#92c5de' },
-                { label: '1980-2000', color: '#f4a582' },
-                { label: '2000-2020', color: '#d6604d' },
-                { label: '> 2020', color: '#b2182b' }
+                { label: '< 1990', color: 'rgb(215, 48, 39)' },     // Red (old)
+                { label: '1990-1995', color: 'rgb(196, 65, 80)' },  // Red-pink transition
+                { label: '1995-2000', color: 'rgb(124, 91, 130)' }, // Purple transition
+                { label: '2000-2005', color: 'rgb(69, 117, 180)' }, // Blue (middle)
+                { label: '2005-2010', color: 'rgb(71, 131, 152)' }, // Blue-green transition
+                { label: '2010-2015', color: 'rgb(74, 153, 113)' }, // Green transition
+                { label: '> 2015', color: 'rgb(77, 175, 74)' }      // Green (new)
             ];
 
             yearRanges.forEach(range => {

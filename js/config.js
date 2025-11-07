@@ -36,12 +36,13 @@ const CONFIG = {
     colors: {
         // Heatmap colors for construction year (old to new)
         yearHeatmap: [
-            [0, 'rgba(33, 102, 172, 0)'],     // Transparent
-            [0.2, 'rgb(103, 169, 207)'],      // Light blue (old buildings)
-            [0.4, 'rgb(209, 229, 240)'],      // Very light blue
-            [0.6, 'rgb(253, 219, 199)'],      // Light orange
-            [0.8, 'rgb(239, 138, 98)'],       // Orange
-            [1, 'rgb(178, 24, 43)']           // Red (new buildings)
+            [0, 'rgba(215, 48, 39, 0)'],      // Transparent
+            [0.2, 'rgb(215, 48, 39)'],        // Red (old buildings before 1990)
+            [0.4, 'rgb(178, 82, 110)'],       // Red-purple transition
+            [0.5, 'rgb(69, 117, 180)'],       // Blue (middle period ~2000-2005)
+            [0.7, 'rgb(73, 146, 127)'],       // Blue-green transition
+            [0.9, 'rgb(77, 175, 74)'],        // Green (new buildings after 2015)
+            [1, 'rgb(77, 175, 74)']           // Green (newest buildings)
         ],
 
         // Colors for building types

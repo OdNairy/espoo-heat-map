@@ -61,3 +61,4 @@ debug/
 # Optional eslint cache
 .eslintcache
 .playwright-mcp
+.vercel

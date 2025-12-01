@@ -8,8 +8,67 @@ const dataLoader = {
      * Initialize the data loader
      */
     init: async function() {
-        // Load data from static file
+        // If using MVT tiles, load metadata only
+        if (CONFIG.useMVT) {
+            return await this.loadTileMetadata();
+        }
+
+        // Otherwise load full GeoJSON data
         return await this.loadBuildingData();
+    },
+
+    /**
+     * Load MVT tile metadata
+     */
+    loadTileMetadata: async function() {
+        try {
+            console.log('Loading MVT tile metadata...');
+
+            // Try to fetch metadata.json from tiles directory
+            const metadataUrl = 'data/tiles/metadata.json';
+            const response = await fetch(metadataUrl);
+
+            if (response.ok) {
+                const metadata = await response.json();
+                console.log('Tile metadata loaded:', metadata);
+
+                // Return metadata in compatible format
+                return {
+                    type: 'FeatureCollection',
+                    features: [], // MVT tiles loaded dynamically by map
+                    metadata: {
+                        useMVT: true,
+                        tileMetadata: metadata,
+                        generatedAt: metadata.generatedAt || new Date().toISOString(),
+                        totalBuildings: metadata.totalBuildings || 0
+                    }
+                };
+            } else {
+                console.log('Tile metadata not found, using default values');
+                return {
+                    type: 'FeatureCollection',
+                    features: [],
+                    metadata: {
+                        useMVT: true,
+                        generatedAt: new Date().toISOString(),
+                        totalBuildings: 63206 // Approximate
+                    }
+                };
+            }
+        } catch (error) {
+            console.error('Error loading tile metadata:', error);
+
+            // Return default metadata
+            return {
+                type: 'FeatureCollection',
+                features: [],
+                metadata: {
+                    useMVT: true,
+                    generatedAt: new Date().toISOString(),
+                    totalBuildings: 63206
+                }
+            };
+        }
     },
 
     /**

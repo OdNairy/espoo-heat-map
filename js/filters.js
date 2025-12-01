@@ -157,6 +157,69 @@ const filters = {
      * Apply all filters to data
      */
     applyFilters: function() {
+        if (CONFIG.useMVT) {
+            // MVT mode: use map filters
+            this.applyMVTFilters();
+        } else {
+            // GeoJSON mode: filter data and update
+            this.applyGeoJSONFilters();
+        }
+    },
+
+    /**
+     * Apply filters for MVT tiles (using map filter expressions)
+     */
+    applyMVTFilters: function() {
+        if (!mapModule.map) return;
+
+        // Build filter expression
+        // Combine year filter and type filter with AND logic
+        const filters = ['all'];
+
+        // Year filter
+        filters.push([
+            'all',
+            ['>=', ['get', 'year'], this.currentFilters.yearMin],
+            ['<=', ['get', 'year'], this.currentFilters.yearMax]
+        ]);
+
+        // Type filter
+        if (this.currentFilters.types.length > 0 && this.currentFilters.types.length < CONFIG.filters.buildingTypes.length) {
+            filters.push(['in', ['get', 'type'], ['literal', this.currentFilters.types]]);
+        }
+
+        // Apply filters to all layers
+        const layers = [
+            'buildings-heat-year',
+            'buildings-points-year',
+            ...Object.keys(CONFIG.colors.buildingTypeColors).map(type => `buildings-heat-${type}`),
+            'buildings-points-type'
+        ];
+
+        layers.forEach(layerId => {
+            if (mapModule.map.getLayer(layerId)) {
+                mapModule.map.setFilter(layerId, filters);
+            }
+        });
+
+        // Update statistics (estimate based on metadata)
+        if (dataLoader.buildingsData && dataLoader.buildingsData.metadata) {
+            const estimatedCount = Math.round(
+                dataLoader.buildingsData.metadata.totalBuildings *
+                (this.currentFilters.types.length / CONFIG.filters.buildingTypes.length)
+            );
+
+            this.updateStatistics([{ properties: {} }], estimatedCount);
+        }
+
+        // Update UI
+        this.updateFilterDisplay();
+    },
+
+    /**
+     * Apply filters for GeoJSON data (filter and update source)
+     */
+    applyGeoJSONFilters: function() {
         if (!dataLoader.processedData) return;
 
         // Get filtered data
@@ -175,19 +238,34 @@ const filters = {
     /**
      * Update statistics display
      */
-    updateStatistics: function(features) {
-        const stats = dataLoader.calculateStats(features);
+    updateStatistics: function(features, estimatedCount = null) {
+        // For MVT mode, use estimated count if provided
+        if (CONFIG.useMVT && estimatedCount !== null) {
+            const countElement = document.getElementById('building-count');
+            if (countElement) {
+                countElement.textContent = utils.formatNumber(estimatedCount) + ' (arvio)';
+            }
 
-        // Update building count
-        const countElement = document.getElementById('building-count');
-        if (countElement) {
-            countElement.textContent = utils.formatNumber(stats.count);
-        }
+            // Area calculation not available in MVT mode
+            const areaElement = document.getElementById('total-area');
+            if (areaElement) {
+                areaElement.textContent = '-';
+            }
+        } else {
+            // GeoJSON mode: calculate actual stats
+            const stats = dataLoader.calculateStats(features);
 
-        // Update total area
-        const areaElement = document.getElementById('total-area');
-        if (areaElement) {
-            areaElement.textContent = utils.formatArea(stats.totalFloorArea);
+            // Update building count
+            const countElement = document.getElementById('building-count');
+            if (countElement) {
+                countElement.textContent = utils.formatNumber(stats.count);
+            }
+
+            // Update total area
+            const areaElement = document.getElementById('total-area');
+            if (areaElement) {
+                areaElement.textContent = utils.formatArea(stats.totalFloorArea);
+            }
         }
     },
 

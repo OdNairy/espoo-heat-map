@@ -16,6 +16,7 @@ const proj4 = require('proj4');
 const xml2js = require('xml2js');
 const ora = require('ora');
 const chalk = require('chalk');
+const { execSync } = require('child_process');
 
 // Configuration
 const CONFIG = {
@@ -541,6 +542,32 @@ async function updateBuildingData() {
         const fileSize = (await fs.stat(CONFIG.outputFile)).size;
         console.log(chalk.green(`✅ Data saved to: ${CONFIG.outputFile}`));
         console.log(chalk.green(`   File size: ${(fileSize / 1024 / 1024).toFixed(2)} MB`));
+
+        // Generate MVT tiles
+        console.log(chalk.cyan('\n🗺️  Generating MVT tiles...'));
+        try {
+            const tileScript = path.join(__dirname, 'generate-mvt-tiles.sh');
+
+            // Check if script exists
+            if (await fs.pathExists(tileScript)) {
+                console.log(chalk.blue('   Running: ./generate-mvt-tiles.sh'));
+
+                // Execute tile generation script
+                execSync(`bash "${tileScript}"`, {
+                    stdio: 'inherit',
+                    cwd: __dirname
+                });
+
+                console.log(chalk.green('\n✅ MVT tiles generated successfully!'));
+            } else {
+                console.log(chalk.yellow('   ⚠️  Tile generation script not found, skipping...'));
+                console.log(chalk.yellow(`   Run './generate-mvt-tiles.sh' manually to generate tiles.`));
+            }
+        } catch (tileError) {
+            console.log(chalk.yellow('\n⚠️  Tile generation failed (non-critical):'));
+            console.log(chalk.yellow(`   ${tileError.message}`));
+            console.log(chalk.yellow('   You can run ./generate-mvt-tiles.sh manually later.'));
+        }
 
         console.log(chalk.blue('\n✨ Update completed successfully!\n'));
     } catch (error) {

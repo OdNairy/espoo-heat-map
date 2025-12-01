@@ -81,9 +81,7 @@ const mapModule = {
      * Add building data to map
      */
     addBuildingData: function(data) {
-        if (!this.map || !data) return;
-
-        console.log(`Adding ${data.features.length} buildings to map`);
+        if (!this.map) return;
 
         // Remove existing source if any
         if (this.map.getSource('buildings')) {
@@ -91,12 +89,30 @@ const mapModule = {
             this.map.removeSource('buildings');
         }
 
-        // Add data source
-        this.map.addSource('buildings', {
-            type: 'geojson',
-            data: data,
-            generateId: true
-        });
+        // Check if using MVT tiles or GeoJSON
+        if (CONFIG.useMVT) {
+            console.log('Adding MVT tile source');
+
+            // Add vector tile source
+            this.map.addSource('buildings', {
+                type: 'vector',
+                tiles: [CONFIG.mvtTiles.url],
+                minzoom: CONFIG.mvtTiles.minzoom,
+                maxzoom: CONFIG.mvtTiles.maxzoom,
+                bounds: CONFIG.mvtTiles.bounds
+            });
+        } else {
+            // Fallback to GeoJSON
+            if (!data) return;
+
+            console.log(`Adding ${data.features ? data.features.length : 0} buildings to map (GeoJSON)`);
+
+            this.map.addSource('buildings', {
+                type: 'geojson',
+                data: data,
+                generateId: true
+            });
+        }
 
         // Add layers based on current view
         if (this.currentView === 'year') {
@@ -125,6 +141,7 @@ const mapModule = {
             id: 'buildings-heat-year',
             type: 'heatmap',
             source: 'buildings',
+            'source-layer': CONFIG.useMVT ? CONFIG.mvtTiles.sourceLayer : undefined,
             paint: {
                 // Weight by year (newer buildings = higher weight)
                 'heatmap-weight': [
@@ -168,6 +185,7 @@ const mapModule = {
             id: 'buildings-points-year',
             type: 'circle',
             source: 'buildings',
+            'source-layer': CONFIG.useMVT ? CONFIG.mvtTiles.sourceLayer : undefined,
             minzoom: 14,
             paint: {
                 'circle-radius': [
@@ -229,6 +247,7 @@ const mapModule = {
                 id: layerId,
                 type: 'heatmap',
                 source: 'buildings',
+                'source-layer': CONFIG.useMVT ? CONFIG.mvtTiles.sourceLayer : undefined,
                 filter: ['==', ['get', 'type'], type],
                 paint: {
                     'heatmap-weight': 1,
@@ -258,6 +277,7 @@ const mapModule = {
             id: 'buildings-points-type',
             type: 'circle',
             source: 'buildings',
+            'source-layer': CONFIG.useMVT ? CONFIG.mvtTiles.sourceLayer : undefined,
             minzoom: 14,
             paint: {
                 'circle-radius': [
@@ -340,10 +360,19 @@ const mapModule = {
      * Update data source with filtered data
      */
     updateData: function(data) {
-        if (!this.map || !data) return;
+        if (!this.map) return;
+
+        // MVT tiles don't need data updates (filtering handled by map filters)
+        if (CONFIG.useMVT) {
+            console.log('MVT mode: filters applied via map filters, no data update needed');
+            return;
+        }
+
+        // GeoJSON mode: update data
+        if (!data) return;
 
         const source = this.map.getSource('buildings');
-        if (source) {
+        if (source && source.type === 'geojson') {
             source.setData(data);
         } else {
             this.addBuildingData(data);

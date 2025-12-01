@@ -13,8 +13,26 @@ const CONFIG = {
     // Map Style - Using OpenFreeMap (free vector tiles)
     mapStyle: 'https://tiles.openfreemap.org/styles/liberty',
 
-    // Static data file path
+    // Data source configuration
+    // Set useMVT to true to use MVT tiles (industry standard, better performance)
+    // Set useMVT to false to use single GeoJSON file (fallback/development)
+    useMVT: true,
+
+    // Static data file path (used when useMVT is false)
     dataFile: 'data/espoo-buildings.json',
+
+    // MVT tiles configuration (used when useMVT is true)
+    mvtTiles: {
+        // URL pattern for MVT tiles - standard XYZ format
+        url: window.location.origin + '/data/tiles/{z}/{x}/{y}.pbf',
+        // Layer name from tippecanoe generation
+        sourceLayer: 'buildings',
+        // Zoom levels for tiles
+        minzoom: 9,
+        maxzoom: 14,
+        // Bounding box for Espoo (optimization)
+        bounds: [24.4, 60.1, 24.9, 60.4]
+    },
 
     // Building Types Mapping (Finnish to English)
     buildingTypes: {

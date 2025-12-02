@@ -90,6 +90,7 @@ tippecanoe \
     --no-tile-size-limit \
     --detect-shared-borders \
     --buffer=5 \
+    --no-tile-compression \
     "$INPUT_FILE"
 
 # Check if generation was successful

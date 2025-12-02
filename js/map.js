@@ -137,11 +137,10 @@ const mapModule = {
         }
 
         // Add heatmap layer
-        this.map.addLayer({
+        const heatmapLayer = {
             id: 'buildings-heat-year',
             type: 'heatmap',
             source: 'buildings',
-            'source-layer': CONFIG.useMVT ? CONFIG.mvtTiles.sourceLayer : undefined,
             paint: {
                 // Weight by year (newer buildings = higher weight)
                 'heatmap-weight': [
@@ -178,14 +177,20 @@ const mapModule = {
                     stops: CONFIG.heatmap.opacityStops
                 }
             }
-        });
+        };
+
+        // Only add source-layer for MVT tiles
+        if (CONFIG.useMVT) {
+            heatmapLayer['source-layer'] = CONFIG.mvtTiles.sourceLayer;
+        }
+
+        this.map.addLayer(heatmapLayer);
 
         // Add point layer for high zoom levels
-        this.map.addLayer({
+        const pointsLayer = {
             id: 'buildings-points-year',
             type: 'circle',
             source: 'buildings',
-            'source-layer': CONFIG.useMVT ? CONFIG.mvtTiles.sourceLayer : undefined,
             minzoom: 14,
             paint: {
                 'circle-radius': [
@@ -217,7 +222,14 @@ const mapModule = {
                 'circle-stroke-color': '#ffffff',
                 'circle-stroke-opacity': 0.8
             }
-        });
+        };
+
+        // Only add source-layer for MVT tiles
+        if (CONFIG.useMVT) {
+            pointsLayer['source-layer'] = CONFIG.mvtTiles.sourceLayer;
+        }
+
+        this.map.addLayer(pointsLayer);
     },
 
     /**
@@ -243,11 +255,10 @@ const mapModule = {
             }
 
             // Add heatmap layer for this type
-            this.map.addLayer({
+            const typeHeatmapLayer = {
                 id: layerId,
                 type: 'heatmap',
                 source: 'buildings',
-                'source-layer': CONFIG.useMVT ? CONFIG.mvtTiles.sourceLayer : undefined,
                 filter: ['==', ['get', 'type'], type],
                 paint: {
                     'heatmap-weight': 1,
@@ -269,15 +280,21 @@ const mapModule = {
                         stops: CONFIG.heatmap.opacityStops
                     }
                 }
-            });
+            };
+
+            // Only add source-layer for MVT tiles
+            if (CONFIG.useMVT) {
+                typeHeatmapLayer['source-layer'] = CONFIG.mvtTiles.sourceLayer;
+            }
+
+            this.map.addLayer(typeHeatmapLayer);
         });
 
         // Add point layer for high zoom
-        this.map.addLayer({
+        const typePointsLayer = {
             id: 'buildings-points-type',
             type: 'circle',
             source: 'buildings',
-            'source-layer': CONFIG.useMVT ? CONFIG.mvtTiles.sourceLayer : undefined,
             minzoom: 14,
             paint: {
                 'circle-radius': [
@@ -308,7 +325,14 @@ const mapModule = {
                 'circle-stroke-color': '#ffffff',
                 'circle-stroke-opacity': 0.8
             }
-        });
+        };
+
+        // Only add source-layer for MVT tiles
+        if (CONFIG.useMVT) {
+            typePointsLayer['source-layer'] = CONFIG.mvtTiles.sourceLayer;
+        }
+
+        this.map.addLayer(typePointsLayer);
     },
 
     /**

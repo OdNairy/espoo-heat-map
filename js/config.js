@@ -16,7 +16,7 @@ const CONFIG = {
     // Data source configuration
     // Set useMVT to true to use MVT tiles (industry standard, better performance)
     // Set useMVT to false to use single GeoJSON file (fallback/development)
-    useMVT: false,
+    useMVT: true,
 
     // Static data file path (used when useMVT is false)
     dataFile: 'data/espoo-buildings.json',
